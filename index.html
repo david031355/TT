@@ -12,22 +12,31 @@
         @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap');
 
         :root {
-            --bg-color: #0b132b;
-            --box-bg: rgba(28, 37, 65, 0.8);
-            --gold: #d4af37;
-            --gold-light: #f9e596;
-            --silver: #c0c0c0;
+            --bg-color: #050714;
+            --box-bg: rgba(20, 25, 45, 0.45); /* רקע זכוכיתי */
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --gold: #e2c275;
+            --gold-light: #fef0c7;
+            --silver: #d1d5db;
             --bronze: #cd7f32;
             --text-main: #ffffff;
-            --text-muted: #a0aabf;
-            --border-radius: 1vw;
+            --text-muted: #9ca3af;
+            --border-radius: 1.5vw;
             --gap: 1vw;
+            
+            /* זוהרים וניאון */
+            --glow-green: 0 0 15px rgba(74, 222, 128, 0.4);
+            --glow-gold: 0 0 20px rgba(226, 194, 117, 0.3);
         }
 
         body {
             margin: 0;
             padding: 1vw;
-            background: linear-gradient(135deg, #0b132b 0%, #1c2541 100%);
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(30, 45, 110, 0.5) 0%, transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(226, 194, 117, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 50% 100%, rgba(20, 25, 45, 0.8) 0%, transparent 60%);
             color: var(--text-main);
             display: flex;
             flex-direction: column;
@@ -37,45 +46,71 @@
             box-sizing: border-box;
             overflow: hidden;
             font-family: 'Heebo', sans-serif;
+            backdrop-filter: blur(50px);
         }
 
         /* --- כותרת סה"כ נתרם והתקדמות --- */
         #campaign-header {
-            flex: 0 0 10vh;
+            flex: 0 0 11vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: var(--box-bg);
+            background: rgba(15, 20, 35, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border-radius: var(--border-radius);
             padding: 0.5vh 2vw;
-            border: 0.2vw solid rgba(212, 175, 55, 0.5);
-            box-shadow: 0 1vh 2vh rgba(0,0,0,0.5), inset 0 0 1.5vh rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--glass-border);
+            border-bottom: 3px solid var(--gold);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
             line-height: 1.1;
             box-sizing: border-box;
+            position: relative; /* בשביל המיקום של הלוגו */
         }
+
+        /* עיצוב הלוגו */
+        #main-logo {
+            position: absolute;
+            right: 2vw;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 8vh;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
+            z-index: 5;
+        }
+
         .header-top { display: flex; align-items: baseline; gap: 1vw; }
-        .header-title { font-size: 3vh; color: var(--gold-light); }
-        .header-amount { font-size: 5vh; font-weight: 900; color: #4ade80; text-shadow: 0 0 1.5vh rgba(74, 222, 128, 0.3); }
+        .header-title { font-size: 3vh; color: var(--gold-light); font-weight: 700; letter-spacing: 1px; }
+        .header-amount { 
+            font-size: 5.5vh; 
+            font-weight: 900; 
+            color: #4ade80; 
+            text-shadow: var(--glow-green); 
+            letter-spacing: 2px;
+        }
         
-        .header-progress { font-size: 1.8vh; color: var(--text-muted); margin-top: 0.5vh; font-weight: bold; }
+        .header-progress { font-size: 1.8vh; color: var(--text-muted); margin-top: 0.5vh; font-weight: bold; letter-spacing: 1px;}
         .progress-bar-container { 
-            width: 100%; max-width: 40vw; height: 1vh; 
-            background: rgba(0,0,0,0.5); border-radius: 1vw; 
-            margin-top: 0.5vh; overflow: hidden; 
-            border: 0.1vw solid rgba(255,255,255,0.1); 
+            width: 100%; max-width: 40vw; height: 0.8vh; 
+            background: rgba(0,0,0,0.6); border-radius: 1vw; 
+            margin-top: 0.8vh; overflow: hidden; 
+            border: 1px solid rgba(255,255,255,0.05); 
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
         }
         .progress-bar-fill { 
-            height: 100%; background: linear-gradient(90deg, #4ade80, #16a34a); 
-            width: 0%; transition: width 1s ease; 
-            box-shadow: 0 0 1vh rgba(74, 222, 128, 0.5);
+            height: 100%; 
+            background: linear-gradient(90deg, #22c55e, #4ade80, #86efac); 
+            width: 0%; transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1); 
+            box-shadow: var(--glow-green);
         }
 
         /* --- פודיום (שלושת הגדולים) --- */
         #podium-section {
             flex: 0 0 25vh;
             display: flex;
-            gap: var(--gap);
+            gap: 1.5vw;
             justify-content: center;
             align-items: flex-end;
             box-sizing: border-box;
@@ -83,20 +118,25 @@
         }
 
         .podium-box {
-            border-radius: 1.5vw 1.5vw 0.8vw 0.8vw;
+            border-radius: 1.5vw 1.5vw 0.5vw 0.5vw;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            box-shadow: 0 1.5vh 3vh rgba(0,0,0,0.5);
-            transition: transform 0.3s ease;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
             position: relative;
             overflow: hidden;
-            padding: 1vh 1vw;
+            padding: 1.5vh 1vw;
             box-sizing: border-box;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
         
+        .podium-box:hover {
+            transform: translateY(-5px);
+        }
+
         .podium-box::after {
             content: '';
             position: absolute;
@@ -104,7 +144,7 @@
             width: 200%; height: 200%;
             background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);
             transform: rotate(45deg);
-            animation: shine 5s infinite;
+            animation: shine 6s infinite;
         }
 
         @keyframes shine {
@@ -112,9 +152,14 @@
             20%, 100% { transform: translateX(100%) rotate(45deg); }
         }
 
-        .podium-title { font-size: 1.5vh; font-weight: bold; background: rgba(0,0,0,0.5); padding: 0.4vh 1vw; border-radius: 1vw; margin-bottom: 0.5vh;}
+        .podium-title { 
+            font-size: 1.5vh; font-weight: bold; 
+            background: rgba(0,0,0,0.4); padding: 0.4vh 1.2vw; 
+            border-radius: 2vw; margin-bottom: 1vh;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
         .podium-name { 
-            font-size: 2.5vh; 
+            font-size: 2.6vh; 
             font-weight: 900; 
             line-height: 1.2; 
             display: -webkit-box;
@@ -123,41 +168,47 @@
             overflow: hidden;
             text-overflow: ellipsis;
             word-break: break-word;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
-        .podium-vaad { font-size: 1.5vh; opacity: 0.8; margin-top: 0.5vh; }
+        .podium-vaad { font-size: 1.6vh; opacity: 0.7; margin-top: 0.5vh; font-weight: 400;}
         .podium-amount { font-size: 3.5vh; font-weight: 900; margin-top: auto; }
 
         .podium-1 { 
             width: 26vw; height: 100%; 
-            background: linear-gradient(135deg, rgba(212, 175, 55, 0.4) 0%, rgba(212, 175, 55, 0.1) 100%); 
-            border: 0.3vw solid var(--gold); 
-            box-shadow: 0 0 3vw rgba(212,175,55,0.4); 
+            background: linear-gradient(145deg, rgba(226, 194, 117, 0.15) 0%, rgba(20, 25, 45, 0.6) 100%);
+            border: 2px solid var(--gold); 
+            border-bottom: none;
+            box-shadow: 0 -10px 40px rgba(226, 194, 117, 0.15), inset 0 0 20px rgba(226, 194, 117, 0.05); 
             z-index: 3; 
         }
-        .podium-1 .podium-amount { color: var(--gold-light); font-size: 4vh; }
-        .podium-1 .podium-name { font-size: 3vh; }
+        .podium-1 .podium-amount { color: var(--gold-light); font-size: 4.2vh; text-shadow: var(--glow-gold); }
+        .podium-1 .podium-name { font-size: 3.2vh; color: #fff;}
 
         .podium-2 { 
             width: 21vw; height: 80%; 
-            background: linear-gradient(135deg, rgba(192, 192, 192, 0.3) 0%, rgba(192, 192, 192, 0.05) 100%); 
-            border: 0.3vw solid var(--silver); 
+            background: linear-gradient(145deg, rgba(209, 213, 219, 0.15) 0%, rgba(20, 25, 45, 0.6) 100%);
+            border: 2px solid var(--silver); 
+            border-bottom: none;
+            box-shadow: 0 -5px 20px rgba(209, 213, 219, 0.1);
             z-index: 2; 
         }
         .podium-2 .podium-amount { color: var(--silver); }
 
         .podium-3 { 
             width: 21vw; height: 70%; 
-            background: linear-gradient(135deg, rgba(205, 127, 50, 0.3) 0%, rgba(205, 127, 50, 0.05) 100%); 
-            border: 0.3vw solid var(--bronze); 
+            background: linear-gradient(145deg, rgba(205, 127, 50, 0.15) 0%, rgba(20, 25, 45, 0.6) 100%);
+            border: 2px solid var(--bronze); 
+            border-bottom: none;
+            box-shadow: 0 -5px 20px rgba(205, 127, 50, 0.1);
             z-index: 1; 
         }
         .podium-3 .podium-amount { color: var(--bronze); }
 
 
-        /* --- חלק אמצעי (מרכזי וצד ימין) מתכוונן לגובה בדיוק --- */
+        /* --- חלק אמצעי (מרכזי וצד ימין) --- */
         #middle-section {
             flex: 1 1 0; 
-            min-height: 0; /* קריטי כדי שהתוכן הפנימי לא יפרוץ */
+            min-height: 0; 
             display: flex;
             gap: var(--gap);
         }
@@ -174,46 +225,49 @@
             flex: 1;
             background: var(--box-bg);
             border-radius: var(--border-radius);
-            border: 0.2vw solid rgba(212, 175, 55, 0.3);
+            border: 1px solid var(--glass-border);
+            border-right: 4px solid var(--gold);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            box-shadow: 0 1vh 2vh rgba(0,0,0,0.5);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             box-sizing: border-box;
             overflow: hidden;
             transition: all 0.5s ease;
+            backdrop-filter: blur(8px);
         }
 
-        .vaad-name { font-size: 2vh; font-weight: 700; color: var(--gold-light); }
-        .vaad-amount { font-size: 3vh; font-weight: 900; }
+        .vaad-name { font-size: 2vh; font-weight: 700; color: var(--gold-light); letter-spacing: 0.5px;}
+        .vaad-amount { font-size: 3.2vh; font-weight: 900; letter-spacing: 1px;}
 
         /* שמאל - בחורים נגללים */
         #main-left {
             flex: 1;
-            background: var(--box-bg);
+            background: rgba(15, 20, 35, 0.3);
             border-radius: var(--border-radius);
             overflow: hidden;
             position: relative;
             padding: 1vw;
             box-sizing: border-box;
-            box-shadow: inset 0 0 3vw rgba(0,0,0,0.5);
+            border: 1px solid var(--glass-border);
+            box-shadow: inset 0 0 3vw rgba(0,0,0,0.4);
         }
 
         .scrolling-wrapper {
             display: grid;
             grid-template-rows: repeat(3, 1fr);
             grid-auto-flow: column;
-            grid-auto-columns: calc(25% - 0.75vw); /* 4 עמודות בדיוק מול הרווח */
+            grid-auto-columns: calc(25% - 0.75vw); 
             gap: 1vw;
             height: 100%;
         }
 
         .student-box {
-            background: rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.03);
             border-radius: var(--border-radius);
-            border: 0.1vw solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.05);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -222,6 +276,12 @@
             padding: 0.5vh 0.5vw;
             position: relative;
             overflow: hidden;
+            transition: background 0.3s, border-color 0.3s;
+        }
+        
+        .student-box:hover {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(226, 194, 117, 0.3);
         }
 
         .student-name { 
@@ -244,40 +304,47 @@
             gap: var(--gap);
             position: relative;
             box-sizing: border-box;
-            margin-top: 1.5vh;
+            margin-top: 1vh;
+            background: rgba(0,0,0,0.2);
+            padding: 1vh 1vw;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--glass-border);
         }
 
         .bottom-title {
             position: absolute;
             top: -2.5vh;
-            right: 1vw;
-            font-size: 1.5vh;
-            color: var(--gold);
+            right: 1.5vw;
+            font-size: 1.6vh;
+            color: var(--gold-light);
             font-weight: bold;
-            background: var(--bg-color);
-            padding: 0.2vh 1vw;
-            border-radius: 0.5vw;
+            background: linear-gradient(135deg, #1c2541, #0b132b);
+            padding: 0.4vh 1.5vw;
+            border-radius: 1vw;
+            border: 1px solid rgba(226, 194, 117, 0.3);
             z-index: 10;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            letter-spacing: 1px;
         }
 
         .bottom-box {
             flex: 1;
-            background: var(--box-bg);
-            border-radius: var(--border-radius);
-            border: 0.2vw solid rgba(255,255,255,0.2);
+            background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.01) 100%);
+            border-radius: 1vw;
+            border: 1px solid rgba(255,255,255,0.08);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            transition: transform 0.5s ease, opacity 0.5s ease;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
             box-sizing: border-box;
             overflow: hidden;
             padding: 0.5vh 0.5vw;
         }
 
         .bottom-box.new-item {
-            animation: slideInLeft 0.5s ease forwards;
+            animation: slideInLeft 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
 
         .empty-state {
@@ -285,24 +352,25 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            color: var(--text-muted);
+            color: rgba(255,255,255,0.3);
             font-size: 3vh;
-            background: var(--box-bg);
             border-radius: var(--border-radius);
-            border: 0.2vw dashed rgba(255,255,255,0.1);
+            font-weight: 300;
+            letter-spacing: 1px;
         }
 
         @keyframes slideInLeft {
-            from { transform: translateX(-5vw); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+            from { transform: translateX(-5vw) scale(0.9); opacity: 0; }
+            to { transform: translateX(0) scale(1); opacity: 1; }
         }
 
         /* --- התראה מתפרצת (Overlay) --- */
         #alert-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(212, 175, 55, 0.7);
-            backdrop-filter: blur(15px);
+            background: rgba(11, 19, 43, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             z-index: 9999;
             display: flex;
             justify-content: center;
@@ -317,37 +385,54 @@
         }
 
         #alert-card {
-            background: linear-gradient(135deg, #1c2541, #0b132b);
-            border: 0.5vw solid var(--gold);
-            border-radius: 2vw;
-            padding: 5vw;
+            background: radial-gradient(circle at top right, #1c2541, #0b132b);
+            border: 3px solid var(--gold);
+            border-radius: 3vw;
+            padding: 6vw;
             text-align: center;
-            box-shadow: 0 0 5vw rgba(0,0,0,0.8), inset 0 0 2vw rgba(212, 175, 55, 0.5);
-            transform: scale(0.5);
-            transition: all 1s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8), inset 0 0 60px rgba(226, 194, 117, 0.2);
+            transform: scale(0.8) translateY(20px);
+            transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
             position: relative; 
         }
 
         #alert-overlay.active #alert-card {
-            transform: scale(1);
+            transform: scale(1) translateY(0);
+        }
+        
+        #alert-card::before {
+            content: '⭐';
+            font-size: 4vw;
+            position: absolute;
+            top: -2vw;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: pulseStar 2s infinite;
+        }
+        
+        @keyframes pulseStar {
+            0%, 100% { transform: translateX(-50%) scale(1); opacity: 1; }
+            50% { transform: translateX(-50%) scale(1.2); opacity: 0.7; }
         }
 
-        .alert-title { font-size: 4vw; color: var(--gold); margin-bottom: 1vw; }
-        .alert-name { font-size: 8vw; font-weight: 900; margin: 1vw 0; line-height: 1; }
-        .alert-vaad { font-size: 3vw; color: var(--text-muted); }
-        .alert-amount { font-size: 10vw; font-weight: 900; color: #4ade80; margin-top: 1vw; text-shadow: 0 0 2vw rgba(74, 222, 128, 0.5); }
+        .alert-title { font-size: 3.5vw; color: var(--gold-light); margin-bottom: 1.5vw; letter-spacing: 2px; font-weight: 700;}
+        .alert-name { font-size: 7vw; font-weight: 900; margin: 1vw 0; line-height: 1; text-shadow: 0 4px 10px rgba(0,0,0,0.4); }
+        .alert-vaad { font-size: 2.5vw; color: var(--silver); background: rgba(255,255,255,0.1); display: inline-block; padding: 0.5vw 2vw; border-radius: 50px; }
+        .alert-amount { font-size: 9vw; font-weight: 900; color: #4ade80; margin-top: 2vw; text-shadow: var(--glow-green); }
 
         .shrinking {
             position: absolute !important;
             margin: 0 !important;
             padding: 0.5vh !important;
-            border-width: 0.2vw !important;
-            border-radius: var(--border-radius) !important;
-            background: var(--box-bg) !important;
+            border-width: 1px !important;
+            border-radius: 1vw !important;
+            background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.01) 100%) !important;
+            box-shadow: none !important;
         }
+        .shrinking::before { display: none !important; }
         .shrinking .alert-title { display: none; }
-        .shrinking .alert-name { font-size: 1.8vh !important; margin: 0 !important; line-height: 1.2 !important; }
-        .shrinking .alert-vaad { font-size: 1.2vh !important; }
+        .shrinking .alert-name { font-size: 1.8vh !important; margin: 0 !important; line-height: 1.2 !important; text-shadow: none !important; }
+        .shrinking .alert-vaad { font-size: 1.2vh !important; background: transparent !important; padding: 0 !important; }
         .shrinking .alert-amount { font-size: 2.2vh !important; margin: 0 !important; color: var(--gold) !important; text-shadow: none !important;}
 
     </style>
@@ -355,6 +440,9 @@
 <body>
 
     <div id="campaign-header">
+        <!-- הלוגו הוטמע כאן -->
+        <img src="https://noam.page.gd/tat/LOGO.png" alt="לוגו הקמפיין" id="main-logo">
+        
         <div class="header-top">
             <div class="header-title">סה"כ נתרם:</div>
             <div class="header-amount" id="campaign-total">₪0</div>
@@ -372,7 +460,7 @@
     <div id="middle-section">
         <div id="main-left">
             <div class="scrolling-wrapper" id="scrolling-grid">
-                <div style="width:100%; height:100%; display:flex; justify-content:center; align-items:center; color:var(--text-muted); font-size:3vh;">מחפש נתונים בשרת...</div>
+                <div style="width:100%; height:100%; display:flex; justify-content:center; align-items:center; color:rgba(255,255,255,0.2); font-size:3vh; font-weight:300;">מחפש נתונים בשרת...</div>
             </div>
         </div>
         <div id="sidebar-right"></div>
@@ -720,7 +808,7 @@
             grid.innerHTML = '';
             
             if (students.length === 0) {
-                 grid.innerHTML = '<div style="width:100%; height:100%; display:flex; justify-content:center; align-items:center; color:var(--text-muted); font-size:3vh;">אין עדיין נתונים להצגה</div>';
+                 grid.innerHTML = '<div style="width:100%; height:100%; display:flex; justify-content:center; align-items:center; color:rgba(255,255,255,0.2); font-size:3vh; font-weight:300;">אין עדיין נתונים להצגה</div>';
                  return;
             }
             
