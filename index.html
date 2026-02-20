@@ -49,6 +49,40 @@
             backdrop-filter: blur(50px);
         }
 
+        /* --- עיצוב הלוגו הפינתי - לפי הסקיצה --- */
+        .corner-logo-wrapper {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 14vw; /* הקטנה משמעותית של קוטר הפס */
+            height: 15vh; /* הקטנה של הפס */
+            background: linear-gradient(135deg, rgba(20, 25, 45, 0.95) 0%, rgba(11, 19, 43, 0.85) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            /* עיקול הפינה השמאלית תחתונה כפי ששורטט */
+            border-bottom-left-radius: 100%;
+            border-left: 3px solid var(--gold);
+            border-bottom: 3px solid var(--gold);
+            box-shadow: -10px 10px 30px rgba(0,0,0,0.8), inset 5px -5px 25px rgba(226, 194, 117, 0.2);
+            z-index: 100; 
+        }
+
+        .campaign-logo {
+            position: absolute;
+            top: 1vh;
+            right: 1.5vw;
+            height: 18vh; /* הלוגו הוגדל משמעותית כך שיפרוץ את הפס */
+            max-width: 25vw;
+            object-fit: contain;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.8)) drop-shadow(0 0 25px rgba(226, 194, 117, 0.4)); 
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 101; /* מבטיח שהלוגו מרחף מעל הפס והרקע */
+        }
+
+        .campaign-logo:hover {
+            transform: scale(1.08) rotate(-2deg); 
+        }
+
         /* --- כותרת סה"כ נתרם והתקדמות --- */
         #campaign-header {
             flex: 0 0 11vh;
@@ -66,19 +100,9 @@
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
             line-height: 1.1;
             box-sizing: border-box;
-            position: relative; /* בשביל המיקום של הלוגו */
-        }
-
-        /* עיצוב הלוגו */
-        #main-logo {
-            position: absolute;
-            right: 2vw;
-            top: 50%;
-            transform: translateY(-50%);
-            height: 8vh;
-            object-fit: contain;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
-            z-index: 5;
+            position: relative; 
+            z-index: 10;
+            margin-left: 2vw; /* מרחיק מעט משמאל בשביל הסימטריה החזותית */
         }
 
         .header-top { display: flex; align-items: baseline; gap: 1vw; }
@@ -368,20 +392,27 @@
         #alert-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(11, 19, 43, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            background: transparent;
+            backdrop-filter: blur(0px);
+            -webkit-backdrop-filter: blur(0px);
             z-index: 9999;
             display: flex;
             justify-content: center;
             align-items: center;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.3s ease;
+        }
+
+        /* אנימציית הבהוב למסך הרקע של הפופאפ */
+        @keyframes overlayFlash {
+            0% { background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(5px); }
+            100% { background: rgba(11, 19, 43, 0.85); backdrop-filter: blur(20px); }
         }
 
         #alert-overlay.active {
             opacity: 1;
+            animation: overlayFlash 0.5s ease-out forwards;
         }
 
         #alert-card {
@@ -391,13 +422,21 @@
             padding: 6vw;
             text-align: center;
             box-shadow: 0 20px 60px rgba(0,0,0,0.8), inset 0 0 60px rgba(226, 194, 117, 0.2);
-            transform: scale(0.8) translateY(20px);
-            transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
             position: relative; 
+            transform: scale(0);
+            opacity: 0;
+        }
+
+        /* אנימציית קפיצה והבהוב יוקרתי לפופאפ עצמו */
+        @keyframes popupEntrance {
+            0% { transform: scale(0.3); opacity: 0; box-shadow: 0 0 100px #fff, inset 0 0 100px #fff; filter: brightness(3); }
+            40% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 80px rgba(74, 222, 128, 0.8); filter: brightness(1.5); }
+            70% { transform: scale(0.95); filter: brightness(1.1); }
+            100% { transform: scale(1); filter: brightness(1); opacity: 1; }
         }
 
         #alert-overlay.active #alert-card {
-            transform: scale(1) translateY(0);
+            animation: popupEntrance 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
         
         #alert-card::before {
@@ -421,6 +460,7 @@
         .alert-amount { font-size: 9vw; font-weight: 900; color: #4ade80; margin-top: 2vw; text-shadow: var(--glow-green); }
 
         .shrinking {
+            animation: none !important; /* מבטל את הקפיצה בעת המזעור */
             position: absolute !important;
             margin: 0 !important;
             padding: 0.5vh !important;
@@ -428,6 +468,8 @@
             border-radius: 1vw !important;
             background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.01) 100%) !important;
             box-shadow: none !important;
+            transform: scale(1) !important;
+            opacity: 1 !important;
         }
         .shrinking::before { display: none !important; }
         .shrinking .alert-title { display: none; }
@@ -439,10 +481,12 @@
 </head>
 <body>
 
+    <!-- עיצוב פינתי ללוגו (לפי הסקיצה החותכת) -->
+    <div class="corner-logo-wrapper">
+        <img src="https://noam.page.gd/tat/LOGO.png" alt="לוגו הקמפיין" class="campaign-logo">
+    </div>
+
     <div id="campaign-header">
-        <!-- הלוגו הוטמע כאן -->
-        <img src="https://noam.page.gd/tat/LOGO.png" alt="לוגו הקמפיין" id="main-logo">
-        
         <div class="header-top">
             <div class="header-title">סה"כ נתרם:</div>
             <div class="header-amount" id="campaign-total">₪0</div>
@@ -502,6 +546,7 @@
         let previousTotalRaised = 0;
         let previousTop3Ids = [];
         let confettiInterval;
+        let confettiAnimationEnd = 0; // עוקב אחר סיום האנימציה כדי שלא ידרסו אחת את השנייה
 
         const parseAmount = (val) => {
             if (val === undefined || val === null) return 0;
@@ -517,11 +562,17 @@
             return '₪' + (isNaN(num) ? 0 : num).toLocaleString('he-IL');
         };
 
-        // --- מנגנון חגיגות קונפטי על כל המסך 🎉 ---
+        // --- מנגנון חגיגות קונפטי משופר על כל המסך 🎉 ---
+        // עכשיו המנגנון חכם: אם מבקשים קונפטי חדש בזמן שעובד קונפטי קיים (כמו פופאפ שקופץ בזמן חציית 100K)
+        // הוא פשוט מאריך את הזמן ולא קוטע את החגיגה.
         function startConfetti(duration = 60000) {
+            let newEnd = Date.now() + duration;
+            if (newEnd > confettiAnimationEnd) {
+                confettiAnimationEnd = newEnd;
+            }
+            
             if (confettiInterval) clearInterval(confettiInterval);
             
-            let animationEnd = Date.now() + duration;
             let defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 10000 };
 
             function randomInRange(min, max) {
@@ -529,13 +580,15 @@
             }
 
             confettiInterval = setInterval(function() {
-                let timeLeft = animationEnd - Date.now();
+                let timeLeft = confettiAnimationEnd - Date.now();
 
                 if (timeLeft <= 0) {
+                    confettiAnimationEnd = 0;
                     return clearInterval(confettiInterval);
                 }
 
-                let particleCount = 50 * (timeLeft / duration);
+                // כמות הקונפטי נשארת יציבה ונעימה
+                let particleCount = 40;
                 confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
                 confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
             }, 250);
@@ -599,7 +652,7 @@
                     }
                 }
                 
-                // מנגנון זיהוי חציית 100 אלף ש"ח לקונפטי
+                // מנגנון זיהוי חציית 100 אלף ש"ח לקונפטי (דקה שלמה)
                 if (previousTotalRaised > 0 && totalRaised > previousTotalRaised) {
                     let prevMilestone = Math.floor(previousTotalRaised / 100000);
                     let currentMilestone = Math.floor(totalRaised / 100000);
@@ -726,7 +779,7 @@
             let top3 = sortedByAmount.slice(0, 3);
             let others = sortedByAmount.slice(3);
             
-            // מנגנון זיהוי מנצח חדש בפודיום להפעלת קונפטי
+            // מנגנון זיהוי מנצח חדש בפודיום להפעלת קונפטי (דקה שלמה)
             let currentTop3Ids = top3.map(s => s.id);
             if (!isInitialLoad && previousTop3Ids.length > 0) {
                 let newWinner = currentTop3Ids.some(id => !previousTop3Ids.includes(id));
@@ -891,6 +944,9 @@
             card.style = '';
             
             overlay.classList.add('active');
+            
+            // תוספת קונפטי ל-8 שניות (זמן שהתרומה מוצגת)
+            startConfetti(8000);
 
             await new Promise(r => setTimeout(r, 8000));
 
