@@ -511,7 +511,7 @@
         const GOAL_URL = "https://www.matara.pro/nedarimplus/V6/MatchPlus.aspx?Action=ShowGoal&MatchingId=759";
         
         let allStudents = [];
-        let top6 = [];
+        let topNext6 = [];
         let last6 = []; 
         let knownAmounts = {}; 
         
@@ -729,7 +729,7 @@
                 else if (searchStr.includes("שב") || searchStr.includes("שיעורב")) matchedGroup = "שיעור ב'";
                 else if (searchStr.includes("שג") || searchStr.includes("שיעורג")) matchedGroup = "שיעור ג'";
                 else if (searchStr.includes("קא") || searchStr.includes("קיבוצא")) matchedGroup = "קיבוץ א'";
-                else if (searchStr.includes("קיבוץ") || searchStr.includes("קב")) matchedGroup = "קיבוץ";
+                else if (searchStr.includes("קיבוץ") || searchStr.includes("קב") || searchStr.includes("קג") || searchStr.includes("קד") || searchStr.includes("קה")) matchedGroup = "קיבוץ";
 
                 if (matchedGroup) {
                     vaad = matchedGroup;
@@ -737,7 +737,7 @@
                 }
                 
                 // הסרת שם הועד מהשם של הבחור 
-                name = name.replace(/(?:\s|-)*(?:[שקה]"[אבג]|שיעור\s+[אבג]'?|קיבוץ\s+[אב]'?|קיבוץ)\s*$/i, '').trim();
+                name = name.replace(/(?:\s|-)*(?:[שק]"[א-ה]|שיעור\s+[א-ה]'?|קיבוץ\s+[א-ה]'?|קיבוץ)\s*$/i, '').trim();
 
                 if (!isInitialLoad) {
                     let prevAmount = knownAmounts[id] || 0;
@@ -758,7 +758,7 @@
             allStudents = processedStudents;
             let sortedByAmount = [...allStudents].sort((a, b) => b.amount - a.amount);
             
-            top6 = sortedByAmount.slice(0, 6);
+            topNext6 = sortedByAmount.slice(3, 9);
             let top3 = sortedByAmount.slice(0, 3);
             let others = sortedByAmount.slice(3);
             
@@ -869,7 +869,7 @@
                 if(!child.classList.contains('bottom-title')) child.remove();
             });
 
-            let dataToShow = bottomMode === 'recent' ? last6 : top6;
+            let dataToShow = bottomMode === 'recent' ? last6 : topNext6;
             title.innerText = bottomMode === 'recent' ? 'תרומות אחרונות' : 'התרומות הגבוהות';
 
             if (dataToShow.length === 0 && bottomMode === 'recent') {
