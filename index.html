@@ -73,10 +73,9 @@
             z-index: 10;
         }
 
-        /* עיצוב הלוגו - מרחף חופשי בצד ימין, מוגדל ויורד למטה */
+        /* עיצוב הלוגו - מרחף חופשי בצדדים, מוגדל ויורד למטה */
         .campaign-logo {
             position: absolute;
-            right: 1.5vw;
             top: -1.5vh; 
             height: 26vh; 
             max-width: 25vw;
@@ -86,8 +85,18 @@
             z-index: 101; 
         }
 
-        .campaign-logo:hover {
+        .logo-right {
+            right: -1vw; 
+        }
+        .logo-right:hover {
             transform: scale(1.05) rotate(-2deg); 
+        }
+
+        .logo-left {
+            left: -1vw; 
+        }
+        .logo-left:hover {
+            transform: scale(1.05) rotate(2deg); 
         }
 
         .header-top { display: flex; align-items: baseline; gap: 1vw; }
@@ -467,8 +476,9 @@
 <body>
 
     <div id="campaign-header">
-        <!-- הלוגו הוטמע כאן ומרחף מחוץ לגבולות -->
-        <img src="https://noam.page.gd/tat/LOGO2.png" alt="לוגו הקמפיין" class="campaign-logo">
+        <!-- הלוגואים הוטמעו בשני הצדדים -->
+        <img src="https://noam.page.gd/tat/LOGO2.png" alt="לוגו הקמפיין" class="campaign-logo logo-right">
+        <img src="https://noam.page.gd/tat/LOGO2.png" alt="לוגו הקמפיין" class="campaign-logo logo-left">
         
         <div class="header-top">
             <div class="header-title">סה"כ נתרם:</div>
@@ -545,7 +555,7 @@
             return '₪' + (isNaN(num) ? 0 : num).toLocaleString('he-IL');
         };
 
-        // --- מנגנון חגיגות קונפטי משופר על כל המסך 🎉 ---
+        // --- מנגנון חגיגות קונפטי משופר על כל המסך ---
         function startConfetti(duration = 60000) {
             let newEnd = Date.now() + duration;
             if (newEnd > confettiAnimationEnd) {
@@ -554,7 +564,7 @@
             
             if (confettiInterval) clearInterval(confettiInterval);
             
-            let defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 10000, colors: ['#d4af37', '#fdf0d5', '#e5e7eb', '#d97736'] }; // צבעי קונפטי מותאמים
+            let defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 10000, colors: ['#d4af37', '#fdf0d5', '#e5e7eb', '#d97736'] }; 
 
             function randomInRange(min, max) {
                 return Math.random() * (max - min) + min;
@@ -632,12 +642,11 @@
                     }
                 }
                 
-                // מנגנון זיהוי חציית 100 אלף ש"ח לקונפטי (דקה שלמה)
                 if (previousTotalRaised > 0 && totalRaised > previousTotalRaised) {
                     let prevMilestone = Math.floor(previousTotalRaised / 100000);
                     let currentMilestone = Math.floor(totalRaised / 100000);
                     if (currentMilestone > prevMilestone) {
-                        startConfetti(60000); // 60 שניות של קונפטי
+                        startConfetti(60000); 
                     }
                 }
                 if (totalRaised > 0) previousTotalRaised = totalRaised;
@@ -736,7 +745,6 @@
                     groupTotals[matchedGroup] += amount;
                 }
                 
-                // הסרת שם הועד מהשם של הבחור 
                 name = name.replace(/(?:\s|-)*(?:[שק]"[א-ה]|שיעור\s+[א-ה]'?|קיבוץ\s+[א-ה]'?|קיבוץ)\s*$/i, '').trim();
 
                 if (!isInitialLoad) {
@@ -762,7 +770,6 @@
             let top3 = sortedByAmount.slice(0, 3);
             let others = sortedByAmount.slice(3);
             
-            // מנגנון זיהוי מנצח חדש בפודיום להפעלת קונפטי (דקה שלמה)
             let currentTop3Ids = top3.map(s => s.id);
             if (!isInitialLoad && previousTop3Ids.length > 0) {
                 let newWinner = currentTop3Ids.some(id => !previousTop3Ids.includes(id));
@@ -820,7 +827,6 @@
             const sidebar = document.getElementById('sidebar-right');
             sidebar.innerHTML = '';
             
-            // יצירת מערך ממוין של הקבוצות לפי סך התרומות שלהן (בסדר יורד)
             let sortedGroups = GROUPS.map(group => {
                 return {
                     name: group,
@@ -828,7 +834,6 @@
                 };
             }).sort((a, b) => b.total - a.total);
 
-            // רינדור הקבוצות לפי הסדר הממוין
             sortedGroups.forEach(groupData => {
                 sidebar.innerHTML += `
                     <div class="vaad-box">
