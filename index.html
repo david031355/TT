@@ -12,21 +12,23 @@
         @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap');
 
         :root {
-            --bg-color: #050714;
-            --box-bg: rgba(20, 25, 45, 0.45); /* רקע זכוכיתי */
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --gold: #e2c275;
-            --gold-light: #fef0c7;
-            --silver: #d1d5db;
-            --bronze: #cd7f32;
-            --text-main: #ffffff;
-            --text-muted: #9ca3af;
+            /* פלטת צבעים חדשה - יוקרתי (זהב וחום) */
+            --bg-color: #0d0704; /* חום כהה מאוד/שחור עמוק */
+            --box-bg: rgba(45, 25, 15, 0.45); /* חום שקוף זכוכיתי */
+            --glass-border: rgba(226, 194, 117, 0.15); /* מסגרת זהב עדינה */
+            --gold: #d4af37;
+            --gold-light: #fef0d5;
+            --silver: #e5e7eb;
+            --bronze: #d97736;
+            --text-main: #fdf8f5; /* לבן חמים מעט */
+            --text-muted: #bdaea6;
             --border-radius: 1.5vw;
             --gap: 1vw;
             
-            /* זוהרים וניאון */
-            --glow-green: 0 0 15px rgba(74, 222, 128, 0.4);
-            --glow-gold: 0 0 20px rgba(226, 194, 117, 0.3);
+            /* זוהרים וניאון בזהב במקום ירוק */
+            --glow-money: 0 0 15px rgba(253, 224, 71, 0.5);
+            --glow-gold: 0 0 20px rgba(212, 175, 55, 0.3);
+            --money-color: #fde047; /* זהב מואר לכסף */
         }
 
         body {
@@ -34,9 +36,9 @@
             padding: 1vw;
             background-color: var(--bg-color);
             background-image: 
-                radial-gradient(circle at 15% 20%, rgba(30, 45, 110, 0.5) 0%, transparent 40%),
-                radial-gradient(circle at 85% 80%, rgba(226, 194, 117, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 50% 100%, rgba(20, 25, 45, 0.8) 0%, transparent 60%);
+                radial-gradient(circle at 15% 20%, rgba(70, 35, 15, 0.4) 0%, transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(212, 175, 55, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 50% 100%, rgba(35, 15, 5, 0.8) 0%, transparent 60%);
             color: var(--text-main);
             display: flex;
             flex-direction: column;
@@ -49,60 +51,43 @@
             backdrop-filter: blur(50px);
         }
 
-        /* --- עיצוב הלוגו הפינתי - לפי הסקיצה --- */
-        .corner-logo-wrapper {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 14vw; /* הקטנה משמעותית של קוטר הפס */
-            height: 15vh; /* הקטנה של הפס */
-            background: linear-gradient(135deg, rgba(20, 25, 45, 0.95) 0%, rgba(11, 19, 43, 0.85) 100%);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            /* עיקול הפינה השמאלית תחתונה כפי ששורטט */
-            border-bottom-left-radius: 100%;
-            border-left: 3px solid var(--gold);
-            border-bottom: 3px solid var(--gold);
-            box-shadow: -10px 10px 30px rgba(0,0,0,0.8), inset 5px -5px 25px rgba(226, 194, 117, 0.2);
-            z-index: 100; 
-        }
-
-        .campaign-logo {
-            position: absolute;
-            top: 1vh;
-            right: 1.5vw;
-            height: 18vh; /* הלוגו הוגדל משמעותית כך שיפרוץ את הפס */
-            max-width: 25vw;
-            object-fit: contain;
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.8)) drop-shadow(0 0 25px rgba(226, 194, 117, 0.4)); 
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            z-index: 101; /* מבטיח שהלוגו מרחף מעל הפס והרקע */
-        }
-
-        .campaign-logo:hover {
-            transform: scale(1.08) rotate(-2deg); 
-        }
-
         /* --- כותרת סה"כ נתרם והתקדמות --- */
         #campaign-header {
             flex: 0 0 11vh;
+            width: 100%; 
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: rgba(15, 20, 35, 0.6);
+            background: rgba(30, 15, 8, 0.65); /* חום עשיר וכהה */
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border-radius: var(--border-radius);
             padding: 0.5vh 2vw;
-            border: 1px solid var(--glass-border);
-            border-bottom: 3px solid var(--gold);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--glass-border); 
+            border-bottom: 3px solid var(--gold); 
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5), inset 0 -4px 15px rgba(226, 194, 117, 0.1);
             line-height: 1.1;
             box-sizing: border-box;
             position: relative; 
             z-index: 10;
-            margin-left: 2vw; /* מרחיק מעט משמאל בשביל הסימטריה החזותית */
+        }
+
+        /* עיצוב הלוגו - מרחף חופשי בצד ימין, מוגדל ויורד למטה */
+        .campaign-logo {
+            position: absolute;
+            right: 1.5vw;
+            top: -1.5vh; 
+            height: 26vh; 
+            max-width: 25vw;
+            object-fit: contain;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.8)) drop-shadow(0 0 25px rgba(226, 194, 117, 0.5)); 
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 101; 
+        }
+
+        .campaign-logo:hover {
+            transform: scale(1.05) rotate(-2deg); 
         }
 
         .header-top { display: flex; align-items: baseline; gap: 1vw; }
@@ -110,8 +95,8 @@
         .header-amount { 
             font-size: 5.5vh; 
             font-weight: 900; 
-            color: #4ade80; 
-            text-shadow: var(--glow-green); 
+            color: var(--money-color); 
+            text-shadow: var(--glow-money); 
             letter-spacing: 2px;
         }
         
@@ -120,14 +105,14 @@
             width: 100%; max-width: 40vw; height: 0.8vh; 
             background: rgba(0,0,0,0.6); border-radius: 1vw; 
             margin-top: 0.8vh; overflow: hidden; 
-            border: 1px solid rgba(255,255,255,0.05); 
+            border: 1px solid rgba(226, 194, 117, 0.2); 
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
         }
         .progress-bar-fill { 
             height: 100%; 
-            background: linear-gradient(90deg, #22c55e, #4ade80, #86efac); 
+            background: linear-gradient(90deg, #a16207, #eab308, #fef08a); /* גרדיאנט מוזהב חדש */
             width: 0%; transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1); 
-            box-shadow: var(--glow-green);
+            box-shadow: var(--glow-money);
         }
 
         /* --- פודיום (שלושת הגדולים) --- */
@@ -142,7 +127,7 @@
         }
 
         .podium-box {
-            border-radius: 1.5vw 1.5vw 0.5vw 0.5vw;
+            border-radius: 1.5vw; 
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -151,10 +136,11 @@
             transition: transform 0.4s ease, box-shadow 0.4s ease;
             position: relative;
             overflow: hidden;
-            padding: 1.5vh 1vw;
+            padding: 1vh 1vw; 
             box-sizing: border-box;
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
+            margin-bottom: 0.5vh;
         }
         
         .podium-box:hover {
@@ -178,9 +164,9 @@
 
         .podium-title { 
             font-size: 1.5vh; font-weight: bold; 
-            background: rgba(0,0,0,0.4); padding: 0.4vh 1.2vw; 
+            background: rgba(0,0,0,0.5); padding: 0.4vh 1.2vw; 
             border-radius: 2vw; margin-bottom: 1vh;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(226, 194, 117, 0.2);
         }
         .podium-name { 
             font-size: 2.6vh; 
@@ -192,41 +178,40 @@
             overflow: hidden;
             text-overflow: ellipsis;
             word-break: break-word;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.6);
         }
         .podium-vaad { font-size: 1.6vh; opacity: 0.7; margin-top: 0.5vh; font-weight: 400;}
         .podium-amount { font-size: 3.5vh; font-weight: 900; margin-top: auto; }
 
         .podium-1 { 
             width: 26vw; height: 100%; 
-            background: linear-gradient(145deg, rgba(226, 194, 117, 0.15) 0%, rgba(20, 25, 45, 0.6) 100%);
-            border: 2px solid var(--gold); 
-            border-bottom: none;
-            box-shadow: 0 -10px 40px rgba(226, 194, 117, 0.15), inset 0 0 20px rgba(226, 194, 117, 0.05); 
+            background: linear-gradient(145deg, rgba(226, 194, 117, 0.15) 0%, rgba(35, 15, 5, 0.8) 100%);
+            border: 3px solid var(--gold); 
+            box-shadow: 0 10px 30px rgba(226, 194, 117, 0.15), inset 0 0 20px rgba(226, 194, 117, 0.05); 
             z-index: 3; 
         }
         .podium-1 .podium-amount { color: var(--gold-light); font-size: 4.2vh; text-shadow: var(--glow-gold); }
         .podium-1 .podium-name { font-size: 3.2vh; color: #fff;}
 
         .podium-2 { 
-            width: 21vw; height: 80%; 
-            background: linear-gradient(145deg, rgba(209, 213, 219, 0.15) 0%, rgba(20, 25, 45, 0.6) 100%);
-            border: 2px solid var(--silver); 
-            border-bottom: none;
-            box-shadow: 0 -5px 20px rgba(209, 213, 219, 0.1);
+            width: 21vw; height: 85%; 
+            background: linear-gradient(145deg, rgba(209, 213, 219, 0.15) 0%, rgba(35, 15, 5, 0.8) 100%);
+            border: 3px solid var(--silver); 
+            box-shadow: 0 5px 20px rgba(209, 213, 219, 0.1);
             z-index: 2; 
         }
-        .podium-2 .podium-amount { color: var(--silver); }
+        .podium-2 .podium-amount { color: var(--silver); font-size: 3.2vh; }
+        .podium-2 .podium-name { font-size: 2.3vh; }
 
         .podium-3 { 
-            width: 21vw; height: 70%; 
-            background: linear-gradient(145deg, rgba(205, 127, 50, 0.15) 0%, rgba(20, 25, 45, 0.6) 100%);
-            border: 2px solid var(--bronze); 
-            border-bottom: none;
-            box-shadow: 0 -5px 20px rgba(205, 127, 50, 0.1);
+            width: 21vw; height: 76%; 
+            background: linear-gradient(145deg, rgba(205, 127, 50, 0.15) 0%, rgba(35, 15, 5, 0.8) 100%);
+            border: 3px solid var(--bronze); 
+            box-shadow: 0 5px 20px rgba(205, 127, 50, 0.1);
             z-index: 1; 
         }
-        .podium-3 .podium-amount { color: var(--bronze); }
+        .podium-3 .podium-amount { color: var(--bronze); font-size: 3.2vh; }
+        .podium-3 .podium-name { font-size: 2.3vh; }
 
 
         /* --- חלק אמצעי (מרכזי וצד ימין) --- */
@@ -239,7 +224,7 @@
 
         /* ימין - ועדים */
         #sidebar-right {
-            flex: 0 0 20vw;
+            flex: 0 0 15vw; 
             display: flex;
             flex-direction: column;
             gap: 1vh;
@@ -264,19 +249,19 @@
         }
 
         .vaad-name { font-size: 2vh; font-weight: 700; color: var(--gold-light); letter-spacing: 0.5px;}
-        .vaad-amount { font-size: 3.2vh; font-weight: 900; letter-spacing: 1px;}
+        .vaad-amount { font-size: 3.2vh; font-weight: 900; color: var(--gold); letter-spacing: 1px;}
 
         /* שמאל - בחורים נגללים */
         #main-left {
             flex: 1;
-            background: rgba(15, 20, 35, 0.3);
+            background: rgba(25, 12, 5, 0.4); /* רקע חום עדין וכהה */
             border-radius: var(--border-radius);
             overflow: hidden;
             position: relative;
             padding: 1vw;
             box-sizing: border-box;
             border: 1px solid var(--glass-border);
-            box-shadow: inset 0 0 3vw rgba(0,0,0,0.4);
+            box-shadow: inset 0 0 4vw rgba(0,0,0,0.5);
         }
 
         .scrolling-wrapper {
@@ -304,8 +289,8 @@
         }
         
         .student-box:hover {
-            background: rgba(255,255,255,0.06);
-            border-color: rgba(226, 194, 117, 0.3);
+            background: rgba(226, 194, 117, 0.08);
+            border-color: rgba(226, 194, 117, 0.4);
         }
 
         .student-name { 
@@ -329,7 +314,7 @@
             position: relative;
             box-sizing: border-box;
             margin-top: 1vh;
-            background: rgba(0,0,0,0.2);
+            background: rgba(0,0,0,0.3);
             padding: 1vh 1vw;
             border-radius: var(--border-radius);
             border: 1px solid var(--glass-border);
@@ -342,20 +327,20 @@
             font-size: 1.6vh;
             color: var(--gold-light);
             font-weight: bold;
-            background: linear-gradient(135deg, #1c2541, #0b132b);
+            background: linear-gradient(135deg, #3a1c0a, #0a0502); /* חום וזהב */
             padding: 0.4vh 1.5vw;
             border-radius: 1vw;
             border: 1px solid rgba(226, 194, 117, 0.3);
             z-index: 10;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.6);
             letter-spacing: 1px;
         }
 
         .bottom-box {
             flex: 1;
-            background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.01) 100%);
+            background: linear-gradient(180deg, rgba(226,194,117,0.06) 0%, rgba(226,194,117,0.01) 100%);
             border-radius: 1vw;
-            border: 1px solid rgba(255,255,255,0.08);
+            border: 1px solid rgba(226,194,117,0.08);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -376,7 +361,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            color: rgba(255,255,255,0.3);
+            color: rgba(226, 194, 117, 0.3);
             font-size: 3vh;
             border-radius: var(--border-radius);
             font-weight: 300;
@@ -406,8 +391,8 @@
 
         /* אנימציית הבהוב למסך הרקע של הפופאפ */
         @keyframes overlayFlash {
-            0% { background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(5px); }
-            100% { background: rgba(11, 19, 43, 0.85); backdrop-filter: blur(20px); }
+            0% { background: rgba(226, 194, 117, 0.2); backdrop-filter: blur(5px); }
+            100% { background: rgba(20, 10, 5, 0.85); backdrop-filter: blur(20px); } /* מוחשך לחום עמוק */
         }
 
         #alert-overlay.active {
@@ -416,21 +401,21 @@
         }
 
         #alert-card {
-            background: radial-gradient(circle at top right, #1c2541, #0b132b);
+            background: radial-gradient(circle at top right, #3a1a05, #0a0502);
             border: 3px solid var(--gold);
             border-radius: 3vw;
             padding: 6vw;
             text-align: center;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.8), inset 0 0 60px rgba(226, 194, 117, 0.2);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.9), inset 0 0 60px rgba(226, 194, 117, 0.2);
             position: relative; 
             transform: scale(0);
             opacity: 0;
         }
 
-        /* אנימציית קפיצה והבהוב יוקרתי לפופאפ עצמו */
+        /* אנימציית קפיצה והבהוב יוקרתי לפופאפ עצמו - מוזהב */
         @keyframes popupEntrance {
             0% { transform: scale(0.3); opacity: 0; box-shadow: 0 0 100px #fff, inset 0 0 100px #fff; filter: brightness(3); }
-            40% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 80px rgba(74, 222, 128, 0.8); filter: brightness(1.5); }
+            40% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 80px rgba(234, 179, 8, 0.8); filter: brightness(1.5); } /* הבהוב בזהב */
             70% { transform: scale(0.95); filter: brightness(1.1); }
             100% { transform: scale(1); filter: brightness(1); opacity: 1; }
         }
@@ -455,18 +440,18 @@
         }
 
         .alert-title { font-size: 3.5vw; color: var(--gold-light); margin-bottom: 1.5vw; letter-spacing: 2px; font-weight: 700;}
-        .alert-name { font-size: 7vw; font-weight: 900; margin: 1vw 0; line-height: 1; text-shadow: 0 4px 10px rgba(0,0,0,0.4); }
-        .alert-vaad { font-size: 2.5vw; color: var(--silver); background: rgba(255,255,255,0.1); display: inline-block; padding: 0.5vw 2vw; border-radius: 50px; }
-        .alert-amount { font-size: 9vw; font-weight: 900; color: #4ade80; margin-top: 2vw; text-shadow: var(--glow-green); }
+        .alert-name { font-size: 7vw; font-weight: 900; margin: 1vw 0; line-height: 1; text-shadow: 0 4px 10px rgba(0,0,0,0.6); }
+        .alert-vaad { font-size: 2.5vw; color: var(--gold-light); background: rgba(226, 194, 117, 0.15); display: inline-block; padding: 0.5vw 2vw; border-radius: 50px; border: 1px solid rgba(226, 194, 117, 0.3);}
+        .alert-amount { font-size: 9vw; font-weight: 900; color: var(--money-color); margin-top: 2vw; text-shadow: var(--glow-money); }
 
         .shrinking {
-            animation: none !important; /* מבטל את הקפיצה בעת המזעור */
+            animation: none !important; 
             position: absolute !important;
             margin: 0 !important;
             padding: 0.5vh !important;
             border-width: 1px !important;
             border-radius: 1vw !important;
-            background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.01) 100%) !important;
+            background: linear-gradient(180deg, rgba(226,194,117,0.06) 0%, rgba(226,194,117,0.01) 100%) !important;
             box-shadow: none !important;
             transform: scale(1) !important;
             opacity: 1 !important;
@@ -474,19 +459,17 @@
         .shrinking::before { display: none !important; }
         .shrinking .alert-title { display: none; }
         .shrinking .alert-name { font-size: 1.8vh !important; margin: 0 !important; line-height: 1.2 !important; text-shadow: none !important; }
-        .shrinking .alert-vaad { font-size: 1.2vh !important; background: transparent !important; padding: 0 !important; }
+        .shrinking .alert-vaad { font-size: 1.2vh !important; background: transparent !important; padding: 0 !important; border:none !important;}
         .shrinking .alert-amount { font-size: 2.2vh !important; margin: 0 !important; color: var(--gold) !important; text-shadow: none !important;}
 
     </style>
 </head>
 <body>
 
-    <!-- עיצוב פינתי ללוגו (לפי הסקיצה החותכת) -->
-    <div class="corner-logo-wrapper">
-        <img src="https://noam.page.gd/tat/LOGO.png" alt="לוגו הקמפיין" class="campaign-logo">
-    </div>
-
     <div id="campaign-header">
+        <!-- הלוגו הוטמע כאן ומרחף מחוץ לגבולות -->
+        <img src="https://noam.page.gd/tat/LOGO2.png" alt="לוגו הקמפיין" class="campaign-logo">
+        
         <div class="header-top">
             <div class="header-title">סה"כ נתרם:</div>
             <div class="header-amount" id="campaign-total">₪0</div>
@@ -504,7 +487,7 @@
     <div id="middle-section">
         <div id="main-left">
             <div class="scrolling-wrapper" id="scrolling-grid">
-                <div style="width:100%; height:100%; display:flex; justify-content:center; align-items:center; color:rgba(255,255,255,0.2); font-size:3vh; font-weight:300;">מחפש נתונים בשרת...</div>
+                <div style="width:100%; height:100%; display:flex; justify-content:center; align-items:center; color:rgba(226, 194, 117, 0.2); font-size:3vh; font-weight:300;">מחפש נתונים בשרת...</div>
             </div>
         </div>
         <div id="sidebar-right"></div>
@@ -546,7 +529,7 @@
         let previousTotalRaised = 0;
         let previousTop3Ids = [];
         let confettiInterval;
-        let confettiAnimationEnd = 0; // עוקב אחר סיום האנימציה כדי שלא ידרסו אחת את השנייה
+        let confettiAnimationEnd = 0; 
 
         const parseAmount = (val) => {
             if (val === undefined || val === null) return 0;
@@ -563,8 +546,6 @@
         };
 
         // --- מנגנון חגיגות קונפטי משופר על כל המסך 🎉 ---
-        // עכשיו המנגנון חכם: אם מבקשים קונפטי חדש בזמן שעובד קונפטי קיים (כמו פופאפ שקופץ בזמן חציית 100K)
-        // הוא פשוט מאריך את הזמן ולא קוטע את החגיגה.
         function startConfetti(duration = 60000) {
             let newEnd = Date.now() + duration;
             if (newEnd > confettiAnimationEnd) {
@@ -573,7 +554,7 @@
             
             if (confettiInterval) clearInterval(confettiInterval);
             
-            let defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 10000 };
+            let defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 10000, colors: ['#d4af37', '#fdf0d5', '#e5e7eb', '#d97736'] }; // צבעי קונפטי מותאמים
 
             function randomInRange(min, max) {
                 return Math.random() * (max - min) + min;
@@ -587,7 +568,6 @@
                     return clearInterval(confettiInterval);
                 }
 
-                // כמות הקונפטי נשארת יציבה ונעימה
                 let particleCount = 40;
                 confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
                 confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
@@ -755,6 +735,9 @@
                     vaad = matchedGroup;
                     groupTotals[matchedGroup] += amount;
                 }
+                
+                // הסרת שם הועד מהשם של הבחור 
+                name = name.replace(/(?:\s|-)*(?:[שקה]"[אבג]|שיעור\s+[אבג]'?|קיבוץ\s+[אב]'?|קיבוץ)\s*$/i, '').trim();
 
                 if (!isInitialLoad) {
                     let prevAmount = knownAmounts[id] || 0;
@@ -784,7 +767,7 @@
             if (!isInitialLoad && previousTop3Ids.length > 0) {
                 let newWinner = currentTop3Ids.some(id => !previousTop3Ids.includes(id));
                 if (newWinner) {
-                    startConfetti(60000); // 60 שניות של קונפטי
+                    startConfetti(60000); 
                 }
             }
             previousTop3Ids = currentTop3Ids;
@@ -861,7 +844,7 @@
             grid.innerHTML = '';
             
             if (students.length === 0) {
-                 grid.innerHTML = '<div style="width:100%; height:100%; display:flex; justify-content:center; align-items:center; color:rgba(255,255,255,0.2); font-size:3vh; font-weight:300;">אין עדיין נתונים להצגה</div>';
+                 grid.innerHTML = '<div style="width:100%; height:100%; display:flex; justify-content:center; align-items:center; color:rgba(226, 194, 117, 0.2); font-size:3vh; font-weight:300;">אין עדיין נתונים להצגה</div>';
                  return;
             }
             
@@ -945,7 +928,6 @@
             
             overlay.classList.add('active');
             
-            // תוספת קונפטי ל-8 שניות (זמן שהתרומה מוצגת)
             startConfetti(8000);
 
             await new Promise(r => setTimeout(r, 8000));
@@ -958,7 +940,6 @@
             dummyBox.style.visibility = 'hidden';
             bottomSection.insertBefore(dummyBox, bottomSection.children[1]);
             
-            // שימוש בקואורדינטות טבעיות של הדפדפן 
             const dummyRect = dummyBox.getBoundingClientRect();
             const startRect = card.getBoundingClientRect();
 
@@ -972,7 +953,7 @@
             card.classList.add('shrinking');
             
             overlay.style.backdropFilter = 'blur(0px)';
-            overlay.style.backgroundColor = 'rgba(0,0,0,0)';
+            overlay.style.backgroundColor = 'transparent';
 
             setTimeout(() => {
                 card.style.transition = 'all 0.8s cubic-bezier(0.25, 1, 0.5, 1)';
