@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מסך תרומות - קמפיין</title>
+    
+    <!-- סקריפט לאנימציית קונפטי -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap');
+
+        :root {
+            --bg-color: #0b132b;
+            --box-bg: rgba(28, 37, 65, 0.8);
+            --gold: #d4af37;
+            --gold-light: #f9e596;
+            --silver: #c0c0c0;
+            --bronze: #cd7f32;
+            --text-main: #ffffff;
+            --text-muted: #a0aabf;
+            --border-radius: 1vw;
+            --gap: 1vw;
+        }
+
+        body {
+            margin: 0;
+            padding: 1vw;
+            background: linear-gradient(135deg, #0b132b 0%, #1c2541 100%);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            gap: 1vh;
+            height: 100vh;
+            width: 100vw;
+            box-sizing: border-box;
+            overflow: hidden;
+            font-family: 'Heebo', sans-serif;
+        }
+
+        /* --- כותרת סה"כ נתרם והתקדמות --- */
+        #campaign-header {
+            flex: 0 0 10vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: var(--box-bg);
+            border-radius: var(--border-radius);
+            padding: 0.5vh 2vw;
+            border: 0.2vw solid rgba(212, 175, 55, 0.5);
+            box-shadow: 0 1vh 2vh rgba(0,0,0,0.5), inset 0 0 1.5vh rgba(212, 175, 55, 0.1);
+            line-height: 1.1;
+            box-sizing: border-box;
+        }
+        .header-top { display: flex; align-items: baseline; gap: 1vw; }
+        .header-title { font-size: 3vh; color: var(--gold-light); }
+        .header-amount { font-size: 5vh; font-weight: 900; color: #4ade80; text-shadow: 0 0 1.5vh rgba(74, 222, 128, 0.3); }
+        
+        .header-progress { font-size: 1.8vh; color: var(--text-muted); margin-top: 0.5vh; font-weight: bold; }
+        .progress-bar-container { 
+            width: 100%; max-width: 40vw; height: 1vh; 
+            background: rgba(0,0,0,0.5); border-radius: 1vw; 
+            margin-top: 0.5vh; overflow: hidden; 
+            border: 0.1vw solid rgba(255,255,255,0.1); 
+        }
+        .progress-bar-fill { 
+            height: 100%; background: linear-gradient(90deg, #4ade80, #16a34a); 
+            width: 0%; transition: width 1s ease; 
+            box-shadow: 0 0 1vh rgba(74, 222, 128, 0.5);
+        }
+
+        /* --- פודיום (שלושת הגדולים) --- */
+        #podium-section {
+            flex: 0 0 25vh;
+            display: flex;
+            gap: var(--gap);
+            justify-content: center;
+            align-items: flex-end;
+            box-sizing: border-box;
+            padding-bottom: 0.5vh;
+        }
+
+        .podium-box {
+            border-radius: 1.5vw 1.5vw 0.8vw 0.8vw;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 1.5vh 3vh rgba(0,0,0,0.5);
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            padding: 1vh 1vw;
+            box-sizing: border-box;
+        }
+        
+        .podium-box::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);
+            transform: rotate(45deg);
+            animation: shine 5s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            20%, 100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .podium-title { font-size: 1.5vh; font-weight: bold; background: rgba(0,0,0,0.5); padding: 0.4vh 1vw; border-radius: 1vw; margin-bottom: 0.5vh;}
+        .podium-name { 
+            font-size: 2.5vh; 
+            font-weight: 900; 
+            line-height: 1.2; 
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            word-break: break-word;
+        }
+        .podium-vaad { font-size: 1.5vh; opacity: 0.8; margin-top: 0.5vh; }
+        .podium-amount { font-size: 3.5vh; font-weight: 900; margin-top: auto; }
+
+        .podium-1 { 
+            width: 26vw; height: 100%; 
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.4) 0%, rgba(212, 175, 55, 0.1) 100%); 
+            border: 0.3vw solid var(--gold); 
+            box-shadow: 0 0 3vw rgba(212,175,55,0.4); 
+            z-index: 3; 
+        }
+        .podium-1 .podium-amount { color: var(--gold-light); font-size: 4vh; }
+        .podium-1 .podium-name { font-size: 3vh; }
+
+        .podium-2 { 
+            width: 21vw; height: 80%; 
+            background: linear-gradient(135deg, rgba(192, 192, 192, 0.3) 0%, rgba(192, 192, 192, 0.05) 100%); 
+            border: 0.3vw solid var(--silver); 
+            z-index: 2; 
+        }
+        .podium-2 .podium-amount { color: var(--silver); }
+
+        .podium-3 { 
+            width: 21vw; height: 70%; 
+            background: linear-gradient(135deg, rgba(205, 127, 50, 0.3) 0%, rgba(205, 127, 50, 0.05) 100%); 
+            border: 0.3vw solid var(--bronze); 
+            z-index: 1; 
+        }
+        .podium-3 .podium-amount { color: var(--bronze); }
+
+
+        /* --- חלק אמצעי (מרכזי וצד ימין) מתכוונן לגובה בדיוק --- */
+        #middle-section {
+            flex: 1 1 0; 
+            min-height: 0; /* קריטי כדי שהתוכן הפנימי לא יפרוץ */
+            display: flex;
+            gap: var(--gap);
+        }
+
+        /* ימין - ועדים */
+        #sidebar-right {
+            flex: 0 0 20vw;
+            display: flex;
+            flex-direction: column;
+            gap: 1vh;
+        }
+
+        .vaad-box {
+            flex: 1;
+            background: var(--box-bg);
+            border-radius: var(--border-radius);
+            border: 0.2vw solid rgba(212, 175, 55, 0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 1vh 2vh rgba(0,0,0,0.5);
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .vaad-name { font-size: 2vh; font-weight: 700; color: var(--gold-light); }
+        .vaad-amount { font-size: 3vh; font-weight: 900; }
+
+        /* שמאל - בחורים נגללים */
+        #main-left {
+            flex: 1;
+            background: var(--box-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            position: relative;
+            padding: 1vw;
+            box-sizing: border-box;
+            box-shadow: inset 0 0 3vw rgba(0,0,0,0.5);
+        }
+
+        .scrolling-wrapper {
+            display: grid;
+            grid-template-rows: repeat(3, 1fr);
+            grid-auto-flow: column;
+            grid-auto-columns: calc(25% - 0.75vw); /* 4 עמודות בדיוק מול הרווח */
+            gap: 1vw;
+            height: 100%;
+        }
+
+        .student-box {
+            background: rgba(255,255,255,0.05);
+            border-radius: var(--border-radius);
+            border: 0.1vw solid rgba(255,255,255,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0.5vh 0.5vw;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .student-name { 
+            font-size: 2.2vh; 
+            font-weight: 700; 
+            line-height: 1.2; 
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            word-break: break-word;
+        }
+        .student-vaad { font-size: 1.5vh; color: var(--text-muted); margin: 0.5vh 0; }
+        .student-amount { font-size: 2.8vh; font-weight: 900; color: var(--gold); }
+
+        /* --- שורה תחתונה --- */
+        #bottom-section {
+            flex: 0 0 12vh;
+            display: flex;
+            gap: var(--gap);
+            position: relative;
+            box-sizing: border-box;
+            margin-top: 1.5vh;
+        }
+
+        .bottom-title {
+            position: absolute;
+            top: -2.5vh;
+            right: 1vw;
+            font-size: 1.5vh;
+            color: var(--gold);
+            font-weight: bold;
+            background: var(--bg-color);
+            padding: 0.2vh 1vw;
+            border-radius: 0.5vw;
+            z-index: 10;
+        }
+
+        .bottom-box {
+            flex: 1;
+            background: var(--box-bg);
+            border-radius: var(--border-radius);
+            border: 0.2vw solid rgba(255,255,255,0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            box-sizing: border-box;
+            overflow: hidden;
+            padding: 0.5vh 0.5vw;
+        }
+
+        .bottom-box.new-item {
+            animation: slideInLeft 0.5s ease forwards;
+        }
+
+        .empty-state {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 3vh;
+            background: var(--box-bg);
+            border-radius: var(--border-radius);
+            border: 0.2vw dashed rgba(255,255,255,0.1);
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-5vw); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* --- התראה מתפרצת (Overlay) --- */
+        #alert-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(212, 175, 55, 0.7);
+            backdrop-filter: blur(15px);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        #alert-overlay.active {
+            opacity: 1;
+        }
+
+        #alert-card {
+            background: linear-gradient(135deg, #1c2541, #0b132b);
+            border: 0.5vw solid var(--gold);
+            border-radius: 2vw;
+            padding: 5vw;
+            text-align: center;
+            box-shadow: 0 0 5vw rgba(0,0,0,0.8), inset 0 0 2vw rgba(212, 175, 55, 0.5);
+            transform: scale(0.5);
+            transition: all 1s cubic-bezier(0.25, 1, 0.5, 1);
+            position: relative; 
+        }
+
+        #alert-overlay.active #alert-card {
+            transform: scale(1);
+        }
+
+        .alert-title { font-size: 4vw; color: var(--gold); margin-bottom: 1vw; }
+        .alert-name { font-size: 8vw; font-weight: 900; margin: 1vw 0; line-height: 1; }
+        .alert-vaad { font-size: 3vw; color: var(--text-muted); }
+        .alert-amount { font-size: 10vw; font-weight: 900; color: #4ade80; margin-top: 1vw; text-shadow: 0 0 2vw rgba(74, 222, 128, 0.5); }
+
+        .shrinking {
+            position: absolute !important;
+            margin: 0 !important;
+            padding: 0.5vh !important;
+            border-width: 0.2vw !important;
+            border-radius: var(--border-radius) !important;
+            background: var(--box-bg) !important;
+        }
+        .shrinking .alert-title { display: none; }
+        .shrinking .alert-name { font-size: 1.8vh !important; margin: 0 !important; line-height: 1.2 !important; }
+        .shrinking .alert-vaad { font-size: 1.2vh !important; }
+        .shrinking .alert-amount { font-size: 2.2vh !important; margin: 0 !important; color: var(--gold) !important; text-shadow: none !important;}
+
+    </style>
+</head>
+<body>
+
+    <div id="campaign-header">
+        <div class="header-top">
+            <div class="header-title">סה"כ נתרם:</div>
+            <div class="header-amount" id="campaign-total">₪0</div>
+        </div>
+        <div class="header-progress" id="campaign-progress-text">ממתין לנתונים...</div>
+        <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="campaign-progress-bar"></div>
+        </div>
+    </div>
+
+    <div id="podium-section">
+        <div class="empty-state" style="width:100%; height:100%; border:none; background:transparent;">ממתינים לנתוני תרומות...</div>
+    </div>
+
+    <div id="middle-section">
+        <div id="main-left">
+            <div class="scrolling-wrapper" id="scrolling-grid">
+                <div style="width:100%; height:100%; display:flex; justify-content:center; align-items:center; color:var(--text-muted); font-size:3vh;">מחפש נתונים בשרת...</div>
+            </div>
+        </div>
+        <div id="sidebar-right"></div>
+    </div>
+
+    <div id="bottom-section">
+        <div class="bottom-title" id="bottom-title">תרומות אחרונות</div>
+    </div>
+
+    <div id="alert-overlay">
+        <div id="alert-card">
+            <div class="alert-title">תרומה חדשה!</div>
+            <div class="alert-name" id="alert-name">ישראל ישראלי</div>
+            <div class="alert-vaad" id="alert-vaad">קיבוץ א'</div>
+            <div class="alert-amount" id="alert-amount">₪5,000</div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "https://www.matara.pro/nedarimplus/V6/MatchPlus.aspx?Action=SearchMatrim&Name=&MosadId=1000347";
+        const GOAL_URL = "https://www.matara.pro/nedarimplus/V6/MatchPlus.aspx?Action=ShowGoal&MatchingId=759";
+        
+        let allStudents = [];
+        let top6 = [];
+        let last6 = []; 
+        let knownAmounts = {}; 
+        
+        const GROUPS = ["שיעור א'", "שיעור ב'", "שיעור ג'", "קיבוץ א'", "קיבוץ"];
+        let groupTotals = {};
+
+        let bottomMode = 'recent'; 
+        let bottomToggleInterval;
+        let alertQueue = [];
+        let isAlerting = false;
+        
+        let isFirstSuccessfulLoad = true; 
+        
+        // משתני זיהוי לחגיגות קונפטי
+        let previousTotalRaised = 0;
+        let previousTop3Ids = [];
+        let confettiInterval;
+
+        const parseAmount = (val) => {
+            if (val === undefined || val === null) return 0;
+            if (typeof val === 'number') return val;
+            const str = String(val).replace(/[^\d.]/g, ''); 
+            return parseFloat(str) || 0;
+        };
+
+        const cleanText = (txt) => txt ? String(txt).replace(/['"״׳`\s]/g, '') : '';
+
+        const formatMoney = (amount) => {
+            const num = parseFloat(amount);
+            return '₪' + (isNaN(num) ? 0 : num).toLocaleString('he-IL');
+        };
+
+        // --- מנגנון חגיגות קונפטי על כל המסך 🎉 ---
+        function startConfetti(duration = 60000) {
+            if (confettiInterval) clearInterval(confettiInterval);
+            
+            let animationEnd = Date.now() + duration;
+            let defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 10000 };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            confettiInterval = setInterval(function() {
+                let timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(confettiInterval);
+                }
+
+                let particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+        }
+
+        function init() {
+            GROUPS.forEach(g => groupTotals[g] = 0);
+            renderSidebar();
+            
+            pollData();
+            pollGoal();
+            
+            startBottomToggleTimer();
+            setupScrolling();
+        }
+
+        // קריאת נתוני תרומות וסך הכל - כל 15 שניות
+        async function pollData() {
+            try { await fetchData(); } catch (e) { console.error("Data fetch error:", e); }
+            setTimeout(pollData, 15000); 
+        }
+
+        async function pollGoal() {
+            try { await fetchGoal(); } catch (e) { console.error("Goal fetch error:", e); }
+            setTimeout(pollGoal, 15000);
+        }
+
+        async function fetchGoal() {
+            try {
+                const response = await fetch(GOAL_URL);
+                if (!response.ok) return;
+                
+                let textData = await response.text();
+                textData = textData.trim().replace(/^\uFEFF/, ''); 
+                if (textData.endsWith(',')) textData = textData.slice(0, -1).trim();
+                if (textData.startsWith('{') && !textData.endsWith('}')) textData += '}';
+                
+                let data = JSON.parse(textData);
+                
+                let totalRaised = parseAmount(data.Donated);
+                let goalAmount = parseAmount(data.Goal);
+                
+                if (totalRaised === 0) {
+                    for(let key in data) {
+                        let lowerKey = String(key).toLowerCase();
+                        if((lowerKey.includes('donate') || lowerKey.includes('raise') || lowerKey.includes('amount') || lowerKey.includes('sum') || lowerKey.includes('total') || lowerKey.includes('coin')) 
+                           && !lowerKey.includes('target') && !lowerKey.includes('goal') && !lowerKey.includes('yaad') && !lowerKey.includes('count')) {
+                            let temp = parseAmount(data[key]);
+                            if(temp > totalRaised) totalRaised = temp;
+                        }
+                    }
+                }
+                
+                if (goalAmount === 0) {
+                    for(let key in data) {
+                        let lowerKey = String(key).toLowerCase();
+                        if(lowerKey.includes('goal') || lowerKey.includes('target')) {
+                            let temp = parseAmount(data[key]);
+                            if(temp > goalAmount) goalAmount = temp;
+                        }
+                    }
+                }
+                
+                // מנגנון זיהוי חציית 100 אלף ש"ח לקונפטי
+                if (previousTotalRaised > 0 && totalRaised > previousTotalRaised) {
+                    let prevMilestone = Math.floor(previousTotalRaised / 100000);
+                    let currentMilestone = Math.floor(totalRaised / 100000);
+                    if (currentMilestone > prevMilestone) {
+                        startConfetti(60000); // 60 שניות של קונפטי
+                    }
+                }
+                if (totalRaised > 0) previousTotalRaised = totalRaised;
+
+                if (totalRaised > 0) {
+                    document.getElementById('campaign-total').innerText = formatMoney(totalRaised);
+                }
+                
+                if (goalAmount > 0) {
+                    let percent = Math.floor((totalRaised / goalAmount) * 100);
+                    document.getElementById('campaign-progress-text').innerText = `מתוך ${formatMoney(goalAmount)} (${percent}%)`;
+                    
+                    let visualPercent = percent > 100 ? 100 : percent;
+                    document.getElementById('campaign-progress-bar').style.width = visualPercent + '%';
+                }
+                
+            } catch (error) {
+                throw error;
+            }
+        }
+
+        async function fetchData() {
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error("HTTP Status " + response.status);
+                
+                let textData = await response.text();
+                textData = textData.trim().replace(/^\uFEFF/, ''); 
+                
+                if (textData.endsWith(',')) {
+                    textData = textData.slice(0, -1).trim();
+                }
+                
+                if (textData.startsWith('{')) {
+                    textData = `[${textData}]`; 
+                }
+                
+                let data = JSON.parse(textData);
+                
+                let dataArray = [];
+                if (Array.isArray(data)) {
+                    if (data.length === 1 && data[0] && typeof data[0] === 'object') {
+                        if (Array.isArray(data[0].Data)) dataArray = data[0].Data;
+                        else if (Array.isArray(data[0].msg)) dataArray = data[0].msg;
+                        else if (Array.isArray(data[0].Items)) dataArray = data[0].Items;
+                        else dataArray = data; 
+                    } else {
+                        dataArray = data; 
+                    }
+                } else {
+                    throw new Error("Parsed JSON is not an array");
+                }
+                
+                processData(dataArray, isFirstSuccessfulLoad);
+                isFirstSuccessfulLoad = false; 
+                
+            } catch (error) {
+                throw error;
+            }
+        }
+
+        function processData(data, isInitialLoad) {
+            let newDonations = [];
+            
+            GROUPS.forEach(g => groupTotals[g] = 0);
+
+            let processedStudents = data.map(item => {
+                let id = item.Id || item.MatrimId || item.Name || Math.random().toString(); 
+                let name = item.Name || item.FirstName + ' ' + item.LastName || "תורם";
+                let vaad = item.GroupName || item.Vaad || item.Group || "כללי";
+                
+                let amount = parseAmount(item.Cumule);
+                
+                if (amount === 0) {
+                    for (let key in item) {
+                        let lowerKey = String(key).toLowerCase();
+                        if ((lowerKey.includes('cumul') || lowerKey.includes('amount') || lowerKey.includes('sum') || lowerKey.includes('total') || lowerKey.includes('raise') || lowerKey.includes('סכום')) 
+                            && !lowerKey.includes('target') && !lowerKey.includes('goal') && !lowerKey.includes('yaad') && !lowerKey.includes('count')) {
+                            let temp = parseAmount(item[key]);
+                            if (temp > amount) amount = temp;
+                        }
+                    }
+                }
+
+                let matchedGroup = null;
+                let searchStr = cleanText(vaad) + " " + cleanText(name); 
+                
+                if (searchStr.includes("שא") || searchStr.includes("שיעורא")) matchedGroup = "שיעור א'";
+                else if (searchStr.includes("שב") || searchStr.includes("שיעורב")) matchedGroup = "שיעור ב'";
+                else if (searchStr.includes("שג") || searchStr.includes("שיעורג")) matchedGroup = "שיעור ג'";
+                else if (searchStr.includes("קא") || searchStr.includes("קיבוצא")) matchedGroup = "קיבוץ א'";
+                else if (searchStr.includes("קיבוץ") || searchStr.includes("קב")) matchedGroup = "קיבוץ";
+
+                if (matchedGroup) {
+                    vaad = matchedGroup;
+                    groupTotals[matchedGroup] += amount;
+                }
+
+                if (!isInitialLoad) {
+                    let prevAmount = knownAmounts[id] || 0;
+                    if (amount > prevAmount) {
+                        let diff = amount - prevAmount;
+                        if (diff >= 5) {
+                            newDonations.push({ id, name, vaad, amount: diff, total: amount });
+                        }
+                    }
+                }
+                
+                knownAmounts[id] = amount;
+                return { id, name, vaad, amount };
+            });
+
+            processedStudents = processedStudents.filter(student => student.amount > 0);
+
+            allStudents = processedStudents;
+            let sortedByAmount = [...allStudents].sort((a, b) => b.amount - a.amount);
+            
+            top6 = sortedByAmount.slice(0, 6);
+            let top3 = sortedByAmount.slice(0, 3);
+            let others = sortedByAmount.slice(3);
+            
+            // מנגנון זיהוי מנצח חדש בפודיום להפעלת קונפטי
+            let currentTop3Ids = top3.map(s => s.id);
+            if (!isInitialLoad && previousTop3Ids.length > 0) {
+                let newWinner = currentTop3Ids.some(id => !previousTop3Ids.includes(id));
+                if (newWinner) {
+                    startConfetti(60000); // 60 שניות של קונפטי
+                }
+            }
+            previousTop3Ids = currentTop3Ids;
+
+            if (newDonations.length > 0) {
+                newDonations.forEach(don => {
+                    last6.unshift(don);
+                    alertQueue.push(don);
+                });
+                last6 = last6.slice(0, 6); 
+                
+                forceBottomMode('recent');
+                processAlertQueue();
+            }
+
+            renderPodium(top3);
+            renderSidebar();
+            renderMainGrid(others); 
+            
+            if(!isAlerting) renderBottomRow();
+        }
+        
+        function renderPodium(top3) {
+            const podium = document.getElementById('podium-section');
+            podium.innerHTML = '';
+            
+            if(top3.length === 0) {
+                podium.innerHTML = '<div class="empty-state" style="width:100%; height:100%; border:none; background:transparent;">ממתינים לתרומות ראשונות...</div>';
+                return;
+            }
+
+            const displayOrder = [top3[1], top3[0], top3[2]];
+            const classes = ['podium-2', 'podium-1', 'podium-3'];
+            const titles = ['🥈 מקום שני', '👑 מקום ראשון', '🥉 מקום שלישי'];
+
+            displayOrder.forEach((student, index) => {
+                if(!student) return;
+                podium.innerHTML += `
+                    <div class="podium-box ${classes[index]}">
+                        <div class="podium-title">${titles[index]}</div>
+                        <div class="podium-name" title="${student.name}">${student.name}</div>
+                        <div class="podium-vaad">${student.vaad}</div>
+                        <div class="podium-amount">${formatMoney(student.amount)}</div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderSidebar() {
+            const sidebar = document.getElementById('sidebar-right');
+            sidebar.innerHTML = '';
+            GROUPS.forEach(group => {
+                sidebar.innerHTML += `
+                    <div class="vaad-box">
+                        <div class="vaad-name">${group}</div>
+                        <div class="vaad-amount">${formatMoney(groupTotals[group] || 0)}</div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderMainGrid(students) {
+            const grid = document.getElementById('scrolling-grid');
+            grid.innerHTML = '';
+            
+            if (students.length === 0) {
+                 grid.innerHTML = '<div style="width:100%; height:100%; display:flex; justify-content:center; align-items:center; color:var(--text-muted); font-size:3vh;">אין עדיין נתונים להצגה</div>';
+                 return;
+            }
+            
+            students.forEach(student => {
+                grid.innerHTML += `
+                    <div class="student-box">
+                        <div class="student-name" title="${student.name}">${student.name}</div>
+                        <div class="student-vaad">${student.vaad}</div>
+                        <div class="student-amount">${formatMoney(student.amount)}</div>
+                    </div>
+                `;
+            });
+
+            grid.innerHTML += grid.innerHTML;
+        }
+
+        function renderBottomRow() {
+            const container = document.getElementById('bottom-section');
+            const title = document.getElementById('bottom-title');
+            
+            Array.from(container.children).forEach(child => {
+                if(!child.classList.contains('bottom-title')) child.remove();
+            });
+
+            let dataToShow = bottomMode === 'recent' ? last6 : top6;
+            title.innerText = bottomMode === 'recent' ? 'תרומות אחרונות' : 'התרומות הגבוהות';
+
+            if (dataToShow.length === 0 && bottomMode === 'recent') {
+                container.innerHTML += `<div class="empty-state">ממתינים לתרומות חדשות...</div>`;
+                return;
+            }
+
+            dataToShow.forEach((item, index) => {
+                const box = document.createElement('div');
+                box.className = 'bottom-box new-item';
+                box.style.animationDelay = `${index * 0.1}s`; 
+                
+                let amountToShow = bottomMode === 'recent' ? (item.amount || item.total || 0) : (item.amount || 0);
+
+                box.innerHTML = `
+                    <div class="student-name" title="${item.name}">${item.name}</div>
+                    <div class="student-vaad">${item.vaad}</div>
+                    <div class="student-amount">${formatMoney(amountToShow)}</div>
+                `;
+                container.appendChild(box);
+            });
+        }
+
+        function toggleBottomMode() {
+            if (isAlerting) return; 
+            bottomMode = bottomMode === 'recent' ? 'top' : 'recent';
+            renderBottomRow();
+        }
+
+        function startBottomToggleTimer() {
+            clearInterval(bottomToggleInterval);
+            bottomToggleInterval = setInterval(toggleBottomMode, 30000);
+        }
+
+        function forceBottomMode(mode) {
+            bottomMode = mode;
+            renderBottomRow();
+            startBottomToggleTimer(); 
+        }
+
+        async function processAlertQueue() {
+            if (isAlerting || alertQueue.length === 0) return;
+            
+            isAlerting = true;
+            const donation = alertQueue.shift();
+            
+            const overlay = document.getElementById('alert-overlay');
+            const card = document.getElementById('alert-card');
+            
+            document.getElementById('alert-name').innerText = donation.name;
+            document.getElementById('alert-vaad').innerText = donation.vaad;
+            document.getElementById('alert-amount').innerText = formatMoney(donation.amount);
+            
+            card.className = '';
+            card.style = '';
+            
+            overlay.classList.add('active');
+
+            await new Promise(r => setTimeout(r, 8000));
+
+            forceBottomMode('recent');
+            
+            const bottomSection = document.getElementById('bottom-section');
+            const dummyBox = document.createElement('div');
+            dummyBox.className = 'bottom-box';
+            dummyBox.style.visibility = 'hidden';
+            bottomSection.insertBefore(dummyBox, bottomSection.children[1]);
+            
+            // שימוש בקואורדינטות טבעיות של הדפדפן 
+            const dummyRect = dummyBox.getBoundingClientRect();
+            const startRect = card.getBoundingClientRect();
+
+            card.style.position = 'fixed';
+            card.style.left = startRect.left + 'px';
+            card.style.top = startRect.top + 'px';
+            card.style.width = startRect.width + 'px';
+            card.style.height = startRect.height + 'px';
+            card.style.margin = '0';
+            
+            card.classList.add('shrinking');
+            
+            overlay.style.backdropFilter = 'blur(0px)';
+            overlay.style.backgroundColor = 'rgba(0,0,0,0)';
+
+            setTimeout(() => {
+                card.style.transition = 'all 0.8s cubic-bezier(0.25, 1, 0.5, 1)';
+                card.style.left = dummyRect.left + 'px';
+                card.style.top = dummyRect.top + 'px';
+                card.style.width = dummyRect.width + 'px';
+                card.style.height = dummyRect.height + 'px';
+            }, 50);
+
+            setTimeout(() => {
+                dummyBox.remove();
+                overlay.classList.remove('active');
+                overlay.style = ''; 
+                card.style = '';
+                card.classList.remove('shrinking');
+                
+                isAlerting = false;
+                renderBottomRow(); 
+                
+                processAlertQueue();
+            }, 850);
+        }
+
+        function setupScrolling() {
+            const grid = document.getElementById('scrolling-grid');
+            let scrollPos = 0;
+            const speed = 1.5; 
+            
+            function step() {
+                if (grid.scrollWidth > grid.clientWidth) {
+                    scrollPos += speed;
+                    if (scrollPos > grid.scrollWidth / 2) {
+                        scrollPos = 0;
+                    }
+                    grid.style.transform = `translateX(${scrollPos}px)`;
+                } else {
+                    grid.style.transform = `translateX(0px)`;
+                    scrollPos = 0;
+                }
+                requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+        }
+
+        window.onload = init;
+
+    </script>
+</body>
+</html>
