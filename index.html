@@ -183,6 +183,7 @@
             box-shadow: 0 1vh 2vh rgba(0,0,0,0.5);
             box-sizing: border-box;
             overflow: hidden;
+            transition: all 0.5s ease;
         }
 
         .vaad-name { font-size: 2vh; font-weight: 700; color: var(--gold-light); }
@@ -694,11 +695,21 @@
         function renderSidebar() {
             const sidebar = document.getElementById('sidebar-right');
             sidebar.innerHTML = '';
-            GROUPS.forEach(group => {
+            
+            // יצירת מערך ממוין של הקבוצות לפי סך התרומות שלהן (בסדר יורד)
+            let sortedGroups = GROUPS.map(group => {
+                return {
+                    name: group,
+                    total: groupTotals[group] || 0
+                };
+            }).sort((a, b) => b.total - a.total);
+
+            // רינדור הקבוצות לפי הסדר הממוין
+            sortedGroups.forEach(groupData => {
                 sidebar.innerHTML += `
                     <div class="vaad-box">
-                        <div class="vaad-name">${group}</div>
-                        <div class="vaad-amount">${formatMoney(groupTotals[group] || 0)}</div>
+                        <div class="vaad-name">${groupData.name}</div>
+                        <div class="vaad-amount">${formatMoney(groupData.total)}</div>
                     </div>
                 `;
             });
