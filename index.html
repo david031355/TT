@@ -33,6 +33,12 @@
             --money-color: #fde047; 
         }
 
+        /* הגנת חריגות גורפת - מונעת מאלמנטים לשבור את המסך */
+        *, *::before, *::after {
+            min-width: 0;
+            min-height: 0;
+        }
+
         body {
             margin: 0;
             padding: 1vw;
@@ -155,8 +161,8 @@
         .podium-3 .podium-name { font-size: 2.5vh; }
 
         /* --- עיצוב יעדים אישיים מובלטים - פסים קטנים --- */
-        .student-progress-container { width: 90%; height: 0.8vh; background: rgba(0,0,0,0.75); border-radius: 1vw; margin-top: 0.4vh; overflow: hidden; border: 1px solid rgba(226, 194, 117, 0.3); box-shadow: inset 0 1px 3px rgba(0,0,0,0.8); }
-        .student-goal-text { font-size: 1.3vh; color: var(--gold-light); opacity: 0.8; margin-top: 0.3vh; font-family: 'Heebo', sans-serif; letter-spacing: 0.5px;}
+        .student-progress-container { flex-shrink: 0; width: 90%; height: 0.8vh; background: rgba(0,0,0,0.75); border-radius: 1vw; margin-top: 0.4vh; overflow: hidden; border: 1px solid rgba(226, 194, 117, 0.3); box-shadow: inset 0 1px 3px rgba(0,0,0,0.8); }
+        .student-goal-text { flex-shrink: 0; font-size: 1.3vh; color: var(--gold-light); opacity: 0.8; margin-top: 0.3vh; font-family: 'Heebo', sans-serif; letter-spacing: 0.5px;}
 
         /* --- חלק אמצעי (מרכזי וצד ימין) --- */
         #middle-section { flex: 1 1 0; min-height: 0; display: flex; gap: var(--gap); z-index: 10;}
@@ -321,6 +327,7 @@
         let previousTop3Ids = [];
         let confettiInterval;
         let confettiAnimationEnd = 0; 
+        let bottomRowTimeout; // משתנה גלובלי לניהול טיימרים של עיצוב (מונע באגים)
 
         // --- מערכת חלקיקים (אבק כוכבים מוזהב) ---
         function setupParticles() {
@@ -623,7 +630,7 @@
                 });
                 last6 = last6.slice(0, 6); 
                 
-                forceBottomMode('recent');
+                forceBottomMode('recent', false); // מעדכן בלי הבהוב של אנימציה!
                 processAlertQueue();
             }
 
@@ -631,7 +638,8 @@
             renderSidebar();
             renderMainGrid(others); 
             
-            if(!isAlerting) renderBottomRow();
+            // מעדכן את הפס למטה, אבל אם זו רק משיכת נתונים שגרתית ברקע - נעשה זאת בלי הבהוב!
+            if(!isAlerting) renderBottomRow(isInitialLoad);
         }
         
         function renderPodium(top3) {
@@ -711,13 +719,19 @@
             grid.innerHTML += grid.innerHTML;
         }
 
-        function renderBottomRow(isInitial = false) {
+        function renderBottomRow(fade = true) {
             const contentContainer = document.getElementById('bottom-content');
             const title = document.getElementById('bottom-title');
             
-            if (!isInitial) contentContainer.style.opacity = '0';
+            if (!contentContainer) return;
 
-            setTimeout(() => {
+            // אם נדרש פייד, מנמיכים שקיפות
+            if (fade) contentContainer.style.opacity = '0';
+
+            // מנקה טיימרים קודמים כדי למנוע מחיקה של השורה בטעות!
+            clearTimeout(bottomRowTimeout);
+
+            const updateDOM = () => {
                 contentContainer.innerHTML = '';
 
                 let dataToShow = bottomMode === 'recent' ? last6 : topNext6;
@@ -729,7 +743,7 @@
                     dataToShow.forEach((item, index) => {
                         const box = document.createElement('div');
                         box.className = 'bottom-box new-item';
-                        box.style.animationDelay = `${index * 0.1}s`; 
+                        if (fade) box.style.animationDelay = `${index * 0.1}s`; 
                         
                         let amountToShow = bottomMode === 'recent' ? (item.amount || item.total || 0) : (item.amount || 0);
                         let totalAmountForProgress = item.total || item.amount || 0;
@@ -750,15 +764,22 @@
                     });
                 }
                 
+                if (fade) contentContainer.style.opacity = '1';
+            };
+
+            // אם פייד פעיל נחכה לפני ההוספה, אחרת נעדכן מידית!
+            if (fade) {
+                bottomRowTimeout = setTimeout(updateDOM, 500);
+            } else {
+                updateDOM();
                 contentContainer.style.opacity = '1';
-                
-            }, isInitial ? 0 : 500);
+            }
         }
 
         function toggleBottomMode() {
             if (isAlerting) return; 
             bottomMode = bottomMode === 'recent' ? 'top' : 'recent';
-            renderBottomRow();
+            renderBottomRow(true); // כשהופכים מצב תמיד רוצים לראות את האנימציה
         }
 
         function startBottomToggleTimer() {
@@ -766,9 +787,9 @@
             bottomToggleInterval = setInterval(toggleBottomMode, 30000);
         }
 
-        function forceBottomMode(mode) {
+        function forceBottomMode(mode, fade = true) {
             bottomMode = mode;
-            renderBottomRow();
+            renderBottomRow(fade);
             startBottomToggleTimer(); 
         }
 
@@ -809,7 +830,8 @@
 
             await new Promise(r => setTimeout(r, 8000));
 
-            forceBottomMode('recent');
+            // החלפה מיידית ללא אנימציית Fade כדי למנוע את באג המחיקה!
+            forceBottomMode('recent', false);
             
             const bottomContent = document.getElementById('bottom-content');
             const dummyBox = document.createElement('div');
@@ -821,7 +843,6 @@
                 bottomContent.appendChild(dummyBox);
             }
             
-            // מכיוון שחזרנו לעיצוב יחסי (VH/VW), אין צורך בחישובי Scale, הכל מחושב ישירות
             const dummyRect = dummyBox.getBoundingClientRect();
             const startRect = card.getBoundingClientRect();
 
@@ -853,7 +874,7 @@
                 card.classList.remove('shrinking');
                 
                 isAlerting = false;
-                renderBottomRow(); 
+                renderBottomRow(false); // מעדכן רק את הנתונים, ללא Fade מחדש
                 
                 processAlertQueue();
             }, 850);
